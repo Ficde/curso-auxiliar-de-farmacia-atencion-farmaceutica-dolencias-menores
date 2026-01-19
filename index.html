@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Módulo Atención Farmacéutica Dolencias Menores</div>
+        </header>
+
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Grupos de medicamentos para dolencias menores, uso básico de antiinflamatorios, analgésicos, antibióticos, antimicóticos, gripe, resfrío, dolor, cefaleas y fiebre.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Diferencias entre AINE y analgésicos, uso racional de antibióticos, manejo sintomático de gripe y resfrío, clasificación del dolor, escalera OMS, cefaleas, fiebre y puntos clave en pediatría. </div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Situaciones reales de resfrío y gripe en mostrador, dolor musculoesquelético, migraña conocida, fiebre en niños, conjuntivitis, consultas de anticoncepción, pediatría, geriatría y criterios de derivación.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Ejercicios de definición, uso racional de antibióticos, identificación de migraña, combinaciones para resfrío, consejos breves de fiebre, anticoncepción, seguridad en pediatría y geriatría, y rol del auxiliar.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+       // ===== ACTIVIDADES: MÓDULO – ATENCIÓN FARMACÉUTICA EN DOLENCIAS MENORES (según manual) ===
+const modules = {
+
+  // ===================== SÍNTESIS =====================
+  sintesis: [
+    {
+      type: 'text',
+      badge: 'Grupos',
+      title: 'Grupos terapéuticos básicos',
+      instruction: 'Con tus palabras: ¿cuáles son los principales grupos de medicamentos que se usan en dolencias menores y para qué sirven en general?',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('antiinflam') || v.includes('inflam')) &&
+          (v.includes('analges') || v.includes('dolor')) &&
+          (v.includes('antibiot') || v.includes('infeccion') || v.includes('infección')) &&
+          (v.includes('antimic') || v.includes('hongos') || v.includes('micos'))
+        );
+      },
+      tutor: 'Pensá en antiinflamatorios, analgésicos, antibióticos y antimicóticos como grandes grupos para dolor, inflamación, infecciones bacterianas y por hongos.',
+      explanation: 'En dolencias menores se usan principalmente antiinflamatorios, analgésicos, antibióticos y antimicóticos, cada uno dirigido a inflamación, dolor, infecciones bacterianas o fúngicas.'
+    },
+    {
+      type: 'checklist',
+      badge: 'AINE',
+      title: 'Anti­inflamatorios no esteroideos',
+      instruction: 'Seleccioná características correctas de los AINE (antiinflamatorios no esteroideos).',
+      items: [
+        { text: 'Se usan para tratar dolor e inflamación', correct: true },
+        { text: 'Están relacionados químicamente con la aspirina', correct: true },
+        { text: 'No tienen ningún efecto adverso sobre el estómago ni la presión arterial', correct: false },
+        { text: 'Ejemplos: ibuprofeno, naproxeno, diclofenac, aspirina, ketorolac, dipirona', correct: true }
+      ],
+      tutor: 'Repasá su mecanismo sobre prostaglandinas y los efectos adversos digestivos, renales y cardiovasculares.',
+      explanation: 'Los AINE bloquean mediadores de la inflamación, alivian dolor y fiebre, pero pueden causar irritación gástrica, alteraciones renales y cambios en la presión arterial.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Corticoides',
+      title: 'Corticoides: usos y límites',
+      instruction: 'Marcá en verde los enunciados correctos sobre corticoides.',
+      items: [
+        { text: 'Son antiinflamatorios esteroideos usados también como inmunodepresores y antialérgicos', color: 'green' },
+        { text: 'Pueden ser endógenos (producidos por las suprarrenales) o exógenos (medicamentos)', color: 'green' },
+        { text: 'Son de uso rutinario para tratar gripe y catarro común sin indicación médica', color: 'red' },
+        { text: 'El uso prolongado exógeno puede disminuir la producción natural y causar efectos adversos', color: 'green' }
+      ],
+      tutor: 'Pensá en la diferencia entre corticoides producidos por el cuerpo y los administrados como fármaco.',
+      explanation: 'Los corticoides se usan en enfermedades inflamatorias y autoinmunes, pero su uso exógeno prolongado tiene riesgos digestivos, hormonales e inmunológicos.'
+    },
+    {
+      type: 'text',
+      badge: 'Analgesia',
+      title: 'Definición de analgésico',
+      instruction: 'Definí qué es un analgésico y qué tipo de dolor ayudan a aliviar.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('dolor') || v.includes('algia')) &&
+          (v.includes('calmar') || v.includes('aliviar') || v.includes('disminuir')) &&
+          (v.includes('tejido') || v.includes('golpe') || v.includes('enfermedad') || v.includes('proceso infecc'))
+        );
+      },
+      tutor: 'Partí de la idea AN = no y ALGIA = dolor, y vincúlalo a dolores por golpes, infecciones o enfermedades.',
+      explanation: 'Los analgésicos son fármacos destinados a calmar o aliviar el dolor producido por lesiones tisulares, procesos infecciosos o diversas enfermedades. '
+    },
+    {
+      type: 'checklist',
+      badge: 'Analgesia tipos',
+      title: 'Tipos de analgésicos',
+      instruction: 'Seleccioná enunciados correctos sobre tipos de analgésicos.',
+      items: [
+        { text: 'Los analgésicos no narcóticos suelen ser derivados del paracetamol, con acción analgésica y antipirética', correct: true },
+        { text: 'Los analgésicos narcóticos u opiáceos incluyen morfina, codeína, fentanilo, tramadol', correct: true },
+        { text: 'Los opiáceos actúan principalmente en el sistema nervioso central sobre vías del dolor', correct: true },
+        { text: 'Todos los analgésicos son apropiados para dolencias menores sin control médico', correct: false }
+      ],
+      tutor: 'Diferenciá analgésicos no opioides de los opioides en potencia, mecanismo y riesgos.',
+      explanation: 'Los analgésicos no narcóticos se usan en dolor leve a moderado, mientras que los opiáceos se reservan para dolores intensos y requieren mayor control.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Antibióticos',
+      title: 'Uso adecuado de antibióticos',
+      instruction: 'Marcá en verde afirmaciones correctas sobre los antibióticos.',
+      items: [
+        { text: 'Son antimicrobianos que combaten infecciones bacterianas en tejidos del organismo', color: 'green' },
+        { text: 'Son útiles para tratar resfríos, gripe y otras infecciones virales comunes', color: 'red' },
+        { text: 'Pueden ser bactericidas (matan bacterias) o bacteriostáticos (inhiben su crecimiento)', color: 'green' },
+        { text: 'El uso innecesario favorece la resistencia bacteriana futura', color: 'green' }
+      ],
+      tutor: 'Recordá la diferencia entre infecciones bacterianas y virales al recomendar o no un antibiótico.',
+      explanation: 'Los antibióticos actúan solo frente a bacterias, y su uso inadecuado en cuadros virales o sin control favorece resistencias y efectos adversos. '
+    },
+    {
+      type: 'checklist',
+      badge: 'Antibióticos EA',
+      title: 'Efectos adversos de antibióticos',
+      instruction: 'Seleccioná posibles efectos adversos comunes de los antibióticos.',
+      items: [
+        { text: 'Reacciones alérgicas como urticaria, prurito o dificultad respiratoria', correct: true },
+        { text: 'Alteraciones digestivas como náuseas, diarrea o malestar estomacal', correct: true },
+        { text: 'Crisis convulsivas en algunos casos y fármacos', correct: true },
+        { text: 'Incremento garantizado de la energía sin riesgo', correct: false }
+      ],
+      tutor: 'Pensá en manifestaciones cutáneas, digestivas y reacciones de hipersensibilidad.',
+      explanation: 'Los antibióticos pueden provocar reacciones alérgicas, trastornos digestivos y en algunos casos efectos sobre el sistema nervioso central. '
+    },
+    {
+      type: 'traffic',
+      badge: 'Antimicóticos',
+      title: 'Micosis y antimicóticos',
+      instruction: 'Marcá en verde enunciados correctos sobre micosis y tratamiento.',
+      items: [
+        { text: 'Los antimicóticos inhiben o matan hongos causantes de micosis', color: 'green' },
+        { text: 'Las micosis superficiales afectan piel, uñas y mucosas', color: 'green' },
+        { text: 'Las micosis sistémicas pueden comprometer órganos internos y ser graves', color: 'green' },
+        { text: 'Todas las micosis se resuelven con medidas caseras sin tratamiento farmacológico', color: 'red' }
+      ],
+      tutor: 'Ubicá el rol del farmacéutico en prevenir, detectar y derivar según gravedad.',
+      explanation: 'Las micosis superficiales se tratan con antimicóticos tópicos o sistémicos, mientras que las sistémicas requieren manejo médico especializado.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Gripe/resfrío',
+      title: 'Gripe vs resfrío',
+      instruction: 'Seleccioná afirmaciones correctas que diferencian gripe y resfrío.',
+      items: [
+        { text: 'La gripe suele dar fiebre alta, dolores musculares intensos y gran decaimiento', correct: true },
+        { text: 'El resfrío afecta principalmente la nariz con congestión y rinorrea leve', correct: true },
+        { text: 'Ambas son enfermedades de origen viral respiratorio', correct: true },
+        { text: 'Los antibióticos son el tratamiento de primera elección en ambos casos', correct: false }
+      ],
+      tutor: 'Usá los síntomas sistémicos (fiebre alta, mialgias) para distinguir gripe del resfrío común.',
+      explanation: 'Gripe y resfrío son infecciones virales, la primera más sistémica y la segunda más localizada en vías respiratorias altas, sin indicación rutinaria de antibióticos.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Fiebre',
+      title: 'Concepto de fiebre',
+      instruction: 'Marcá en verde enunciados correctos sobre la fiebre.',
+      items: [
+        { text: 'Es un aumento temporal de la temperatura por ajuste del centro termorregulador', color: 'green' },
+        { text: 'Febrícula es una temperatura menor de 38 °C', color: 'green' },
+        { text: 'Siempre indica una infección bacteriana grave', color: 'red' },
+        { text: 'Puede deberse a infecciones, medicamentos, trastornos inflamatorios o golpes de calor', color: 'green' }
+      ],
+      tutor: 'Pensá en el papel de la fiebre como respuesta del sistema inmune.',
+      explanation: 'La fiebre refleja una elevación regulada de la temperatura por múltiples causas, no siempre infecciosas ni bacterianas.'
+    }
+  ],
+
+  // ===================== ANÁLISIS =====================
+  analisis: [
+    {
+      type: 'text',
+      badge: 'AINE vs analgésico',
+      title: 'Diferencia AINE–analgésico',
+      instruction: 'Explicá la diferencia entre un antiinflamatorio no esteroideo (AINE) y un analgésico no narcótico.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('antiinflam') || v.includes('inflam')) &&
+          (v.includes('analg') || v.includes('dolor')) &&
+          (v.includes('antipir') || v.includes('fiebre')) &&
+          (v.includes('paracetamol') || v.includes('aine') || v.includes('ibuprofeno') || v.includes('aspirina'))
+        );
+      },
+      tutor: 'Recordá que los AINE actúan sobre inflamación además del dolor, y que el paracetamol tiene pobre acción antiinflamatoria.',
+      explanation: 'Los AINE son analgésicos y antipiréticos con acción antiinflamatoria, mientras que analgésicos como el paracetamol tienen escasa acción sobre la inflamación.'
+    },
+    {
+      type: 'checklist',
+      badge: 'AINE EA',
+      title: 'Riesgos de AINE',
+      instruction: 'Seleccioná riesgos o efectos adversos frecuentes de los AINE.',
+      items: [
+        { text: 'Irritación gástrica, úlceras y acidez', correct: true },
+        { text: 'Disminución de la función renal', correct: true },
+        { text: 'Aumento de la presión arterial en algunos pacientes', correct: true },
+        { text: 'Aumento inevitable de la masa muscular', correct: false }
+      ],
+      tutor: 'Relacioná la inhibición de prostaglandinas con la protección gástrica y la función renal.',
+      explanation: 'Al interferir con prostaglandinas protectoras, los AINE pueden dañar mucosa gástrica, reducir perfusión renal y elevar la presión arterial.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Antibiótico práctica',
+      title: 'Cuándo NO indicar antibiótico',
+      instruction: 'Marcá en rojo las situaciones en que NO corresponde antibiótico en dolencias menores.',
+      items: [
+        { text: 'Resfrío común sin signos de complicación bacteriana', color: 'red' },
+        { text: 'Gripe típica con fiebre, mialgias y tos seca de origen viral', color: 'red' },
+        { text: 'Faringitis viral sin exudado purulento ni sospecha de estreptococo', color: 'red' },
+        { text: 'Infección bacteriana confirmada por el médico (ej. faringitis estreptocócica)', color: 'green' }
+      ],
+      tutor: 'Pensá en la indicación de antibióticos solo cuando hay sospecha o confirmación bacteriana.',
+      explanation: 'En cuadros virales típicos no está indicado el uso de antibióticos, reservándose para infecciones bacterianas confirmadas o muy sospechosas.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Gripe tto',
+      title: 'Tratamiento sintomático de gripe',
+      instruction: 'Seleccioná medidas correctas para tratar los síntomas de gripe en el mostrador.',
+      items: [
+        { text: 'Uso de paracetamol o ibuprofeno para fiebre y dolor', correct: true },
+        { text: 'Sugerir reposo, hidratación abundante y evitar alcohol y tabaco', correct: true },
+        { text: 'Recomendar ácido acetilsalicílico en cualquier paciente sin evaluar riesgo', correct: false },
+        { text: 'Orientar sobre combinaciones OTC con analgésico, antihistamínico y descongestivo', correct: true }
+      ],
+      tutor: 'Apoyate en el manejo sintomático y en las combinaciones habituales para resfrío/gripe.',
+      explanation: 'La gripe se maneja con antipiréticos, analgésicos, medidas generales y preparados combinados, evitando aspirina en grupos de riesgo. '
+    },
+    {
+      type: 'traffic',
+      badge: 'Resfrío tto',
+      title: 'Medicamentos para resfrío común',
+      instruction: 'Marcá en verde afirmaciones correctas sobre el tratamiento del resfrío.',
+      items: [
+        { text: 'Se manejan con reposo, líquidos, humidificación ambiental y dieta adecuada', color: 'green' },
+        { text: 'Los antibióticos solo se usan si hay complicaciones bacterianas', color: 'green' },
+        { text: 'Los preparados combinados pueden contener antihistamínico, descongestivo, expectorante y antipirético', color: 'green' },
+        { text: 'Los anticongestivos nasales tópicos deben usarse indefinidamente sin límite de días', color: 'red' }
+      ],
+      tutor: 'Revisá límites de uso de descongestivos tópicos y la falta de eficacia de antibióticos en resfríos.',
+      explanation: 'El resfrío se trata con medidas de soporte y combinaciones sintomáticas, limitando el uso de descongestivos tópicos para evitar efecto rebote y dependencia.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Dolor tipos',
+      title: 'Clasificación del dolor',
+      instruction: 'Seleccioná pares tipo–característica correctamente asociados.',
+      items: [
+        { text: 'Dolor agudo: duración limitada, poco componente psicológico', correct: true },
+        { text: 'Dolor crónico: duración prolongada, mayor componente psicológico', correct: true },
+        { text: 'Dolor neuropático: quemante, con hormigueo y alteraciones de sensibilidad', correct: true },
+        { text: 'Dolor nociceptivo visceral: continuo, profundo, a veces con síntomas neurovegetativos', correct: true }
+      ],
+      tutor: 'Usá la duración, la localización y la sensación subjetiva para clasificar el dolor.',
+      explanation: 'El dolor se clasifica según duración, origen, localización y respuesta a fármacos, lo que orienta la elección terapéutica apropiada.'
+    },
+    {
+      type: 'traffic',
+      badge: 'OMS escalera',
+      title: 'Escalera analgésica OMS',
+      instruction: 'Marcá en verde principios básicos de la escala analgésica de la OMS.',
+      items: [
+        { text: 'Empieza con no opioides y escala a opioides débiles y luego potentes según respuesta', color: 'green' },
+        { text: 'La intensidad del dolor debe cuantificarse para guiar el tratamiento', color: 'green' },
+        { text: 'Mezclar siempre opioides débiles con potentes en el mismo paciente', color: 'red' },
+        { text: 'Los coadyuvantes pueden usarse en cualquier fase según el tipo de dolor', color: 'green' }
+      ],
+      tutor: 'Pensá en los escalones 1 (no opioides), 2 (opioides débiles) y 3 (opioides potentes) con coadyuvantes.',
+      explanation: 'La escala OMS propone un aumento progresivo de la potencia analgésica según la intensidad del dolor, con uso racional de coanalgésicos.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Cefalea alarma',
+      title: 'Cefaleas: signos de alarma',
+      instruction: 'Seleccioná signos que justifican derivación urgente en cefalea o migraña.',
+      items: [
+        { text: 'Fiebre y rigidez de nuca asociados al dolor de cabeza', correct: true },
+        { text: 'Alteraciones visuales importantes (visión doble, luces, manchas intensas)', correct: true },
+        { text: 'Hormigueos o debilidad en brazos y piernas', correct: true },
+        { text: 'Cefalea leve, habitual, que mejora con un AINE común', correct: false }
+      ],
+      tutor: 'Distinguí cefaleas benignas de las que pueden indicar patología neurológica grave.',
+      explanation: 'Cefaleas acompañadas de fiebre, déficit neurológico o cambios bruscos requieren evaluación médica urgente.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Fiebre tto',
+      title: 'Tratamiento de la fiebre',
+      instruction: 'Marcá en verde enunciados correctos sobre el manejo farmacológico de la fiebre.',
+      items: [
+        { text: 'Paracetamol cada 4–6 horas e ibuprofeno cada 6–8 horas ayudan a reducir la fiebre', color: 'green' },
+        { text: 'La fiebre leve siempre debe bajarse a valores totalmente normales', color: 'red' },
+        { text: 'La dipirona puede usarse en fiebre persistente según criterio profesional', color: 'green' },
+        { text: 'En embarazadas y cardiópatas con fiebre alta se recomienda consulta médica inmediata', color: 'green' }
+      ],
+      tutor: 'Recordá que el objetivo es aliviar el malestar más que normalizar por completo la temperatura.',
+      explanation: 'El manejo de la fiebre combina antipiréticos adecuados y criterios de derivación según edad, comorbilidades y persistencia.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Pediatría',
+      title: 'Puntos clave en pediatría',
+      instruction: 'Seleccioná consideraciones importantes al tratar con fármacos en niños.',
+      items: [
+        { text: 'Ajustar dosis por peso o superficie corporal sin superar dosis máximas', correct: true },
+        { text: 'Considerar sabor, textura y volumen de las formas orales líquidas', correct: true },
+        { text: 'Usar siempre presentaciones de adultos partiendo comprimidos sin control', correct: false },
+        { text: 'Verificar edad y peso, y revisar alergias o enfermedades previas', correct: true }
+      ],
+      tutor: 'Pensá en la adaptación de dosis y formas farmacéuticas a cada etapa del desarrollo.',
+      explanation: 'En pediatría importa la dosificación por peso, la forma farmacéutica, la palatabilidad y la seguridad del principio activo.'
+    }
+  ],
+
+  // ===================== ESCENARIOS =====================
+  escenarios: [
+    {
+      type: 'text',
+      badge: 'Resfrío mostrador',
+      title: 'Resfrío sin fiebre alta',
+      instruction: 'Un adulto consulta por congestión nasal, rinorrea y tos leve sin fiebre alta desde hace 2 días. ¿Qué recomendás en la farmacia y cuándo le dirías que consulte al médico?',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('resfr') || v.includes('catarro') || v.includes('gripal')) &&
+          (v.includes('reposo') || v.includes('liquidos') || v.includes('hidrat') || v.includes('humed')) &&
+          (v.includes('descongest') || v.includes('antihist') || v.includes('paracetamol') || v.includes('ibuprofeno')) &&
+          (v.includes('consult') || v.includes('medic') || v.includes('empeora') || v.includes('no mejora'))
+        );
+      },
+      tutor: 'Incorporá medidas generales, combinados sintomáticos y criterios de derivación (fiebre alta persistente, dificultad respiratoria, empeoramiento).',
+      explanation: 'En un resfrío leve se recomiendan medidas sintomáticas y OTC, derivando al médico si aparecen fiebre alta, disnea o si el cuadro no mejora. '
+    },
+    {
+      type: 'traffic',
+      badge: 'Gripe escenario',
+      title: 'Paciente con gripe',
+      instruction: 'Marcá en verde conductas adecuadas ante un paciente con síntomas típicos de gripe.',
+      items: [
+        { text: 'Recomendar antipiréticos y analgésicos para fiebre y dolores', color: 'green' },
+        { text: 'Sugerir reposo, buena hidratación y evitar tabaco y alcohol', color: 'green' },
+        { text: 'Ofrecer antibiótico oral de amplio espectro sin prescripción', color: 'red' },
+        { text: 'Indicar consulta médica si es anciano, embarazada o tiene enfermedad crónica', color: 'green' }
+      ],
+      tutor: 'Distinguí tu rol de apoyo sintomático del rol del médico para antivirales o manejo de complicaciones.',
+      explanation: 'El farmacéutico maneja la gripe con soporte sintomático y reconoce grupos de riesgo que requieren valoración médica temprana. '
+    },
+    {
+      type: 'checklist',
+      badge: 'Dolor leve',
+      title: 'Dolor leve musculoesquelético',
+      instruction: 'Seleccioná las respuestas adecuadas ante un dolor muscular leve por esfuerzo.',
+      items: [
+        { text: 'Sugerir un AINE de baja dosis por tiempo corto si no hay contraindicaciones', correct: true },
+        { text: 'Evaluar antecedentes de úlcera, insuficiencia renal o hipertensión antes de recomendar AINE', correct: true },
+        { text: 'Ofrecer siempre opioides menores como primera opción', correct: false },
+        { text: 'Recomendar medidas físicas como reposo relativo y frío local', correct: true }
+      ],
+      tutor: 'Apoyate en la escala analgésica: dolor leve se maneja con no opioides y medidas no farmacológicas.',
+      explanation: 'Para dolores leves se priorizan AINE o paracetamol, junto a medidas físicas, evitando opioides sin indicación médica.'
+    },
+    {
+      type: 'text',
+      badge: 'Migraña mostrador',
+      title: 'Consulta por migraña conocida',
+      instruction: 'Una paciente con diagnóstico previo de migraña consulta por su crisis habitual, sin signos de alarma. ¿Qué tipo de medicación podés sugerir y qué signos te harían derivarla de urgencia?',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('aine') || v.includes('antiinflam') || v.includes('ibuprofeno') || v.includes('naproxeno')) &&
+          (v.includes('reposo') || v.includes('oscuro') || v.includes('disminuir estres')) &&
+          (v.includes('fiebre') || v.includes('rigidez') || v.includes('vision') || v.includes('debilidad') || v.includes('hormigueo')) &&
+          v.includes('consult')
+        );
+      },
+      tutor: 'Mencioná AINE como primera línea y signos neurológicos o fiebre que obligan a consulta inmediata.',
+      explanation: 'En migraña conocida se usan AINE y medidas ambientales, derivando si aparecen signos atípicos o de alarma neurológica.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Fiebre niño',
+      title: 'Fiebre en pediatría',
+      instruction: 'Marcá en verde actuaciones correctas ante un niño con fiebre moderada sin otros signos graves.',
+      items: [
+        { text: 'Ajustar la dosis de paracetamol o ibuprofeno al peso del niño', color: 'green' },
+        { text: 'Usar la misma dosis que un adulto para simplificar', color: 'red' },
+        { text: 'Aconsejar hidratación y ropa ligera', color: 'green' },
+        { text: 'Derivar si el niño presenta convulsiones febriles o mal estado general', color: 'green' }
+      ],
+      tutor: 'No olvides la importancia de calcular bien la dosis por kilo y de vigilar el estado general.',
+      explanation: 'El manejo de la fiebre pediátrica combina antipiréticos dosificados al peso y vigilancia de signos de gravedad o convulsiones.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Conjuntivitis',
+      title: 'Conjuntivitis en el mostrador',
+      instruction: 'Seleccioná acciones correctas ante ojos rojos, lagrimeo y secreción leve.',
+      items: [
+        { text: 'Sospechar conjuntivitis y preguntar por dolor, fotofobia intensa o alteración visual', correct: true },
+        { text: 'Recomendar higiene ocular y lágrimas artificiales si no hay signos de alarma', correct: true },
+        { text: 'Sugerir colirios antibióticos según protocolos locales cuando sea compatible con conjuntivitis bacteriana leve', correct: true },
+        { text: 'Indicar compartir toallas y maquillaje porque no es contagiosa', correct: false }
+      ],
+      tutor: 'Diferenciá cuadros leves de signos que requieren derivación al oftalmólogo.',
+      explanation: 'La conjuntivitis requiere higiene, posible tratamiento tópico y medidas para evitar contagios, derivando si hay compromiso visual o dolor intenso.'
+    },
+    {
+      type: 'text',
+      badge: 'Anticoncepción',
+      title: 'Consulta sobre anticonceptivos',
+      instruction: 'Una usuaria pide información sobre métodos anticonceptivos disponibles en farmacia. Mencioná dos métodos de barrera y dos hormonales que puedas describir brevemente.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('preservativo') || v.includes('condon') || v.includes('condón') || v.includes('diafragma')) &&
+          (v.includes('pildora') || v.includes('píldora') || v.includes('combinada') || v.includes('minipildora') || v.includes('minipíldora') || v.includes('implante') || v.includes('inyecc') || v.includes('parche'))
+        );
+      },
+      tutor: 'Nombrá preservativo masculino/femenino, diafragma y ejemplos de píldoras, implantes, inyecciones o parches.',
+      explanation: 'Los métodos de barrera impiden el paso de espermatozoides, mientras que los hormonales modifican el ciclo ovulatorio y la receptividad endometrial. '
+    },
+    {
+      type: 'traffic',
+      badge: 'Pediatría escenario',
+      title: 'Medicamento en niño pequeño',
+      instruction: 'Marcá en verde enunciados correctos al dispensar medicación oral líquida a un niño menor de 5 años.',
+      items: [
+        { text: 'Verificar la dosis en mg/kg y el volumen a administrar', color: 'green' },
+        { text: 'Comprobar que el volumen por toma no supere los 5 ml en menores de 5 años si es posible', color: 'green' },
+        { text: 'Ignorar sabor y textura porque no influyen en la adherencia', color: 'red' },
+        { text: 'Revisar alergias y comorbilidades antes de recomendar un OTC', color: 'green' }
+      ],
+      tutor: 'Pensá en la practicidad de la forma farmacéutica y en la seguridad de la dosis.',
+      explanation: 'En pediatría se cuidan tanto la precisión de la dosis como la aceptabilidad organoléptica del medicamento.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Geriatría',
+      title: 'Polimedicación en el anciano',
+      instruction: 'Seleccioná problemas asociados a la polimedicación en geriatría.',
+      items: [
+        { text: 'Mayor riesgo de interacciones y reacciones adversas', correct: true },
+        { text: 'Esquemas terapéuticos complejos y difícil adherencia', correct: true },
+        { text: 'Necesidad de coordinación entre varios especialistas', correct: true },
+        { text: 'Ausencia total de impacto sobre el estado nutricional', correct: false }
+      ],
+      tutor: 'Relacioná la polimedicación con cambios en farmacocinética y fragilidad en el adulto mayor.',
+      explanation: 'La polimedicación en geriatría incrementa el riesgo de efectos adversos, interacciones y problemas de cumplimiento, requiriendo revisión periódica de tratamientos.'
+    },
+    {
+      type: 'text',
+      badge: 'Derivación',
+      title: 'Criterios de derivación al médico',
+      instruction: 'Redactá dos ejemplos de situaciones en dolencias menores en las que debés derivar al médico en lugar de sugerir solo tratamiento OTC.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          v.includes('fiebre') &&
+          (v.includes('alta') || v.includes('persistente') || v.includes('convulsion') || v.includes('convulsión')) &&
+          (v.includes('dolor de cabeza') || v.includes('cefalea') || v.includes('vision') || v.includes('debilidad') || v.includes('pecho') || v.includes('torac') || v.includes('torác')) &&
+          v.includes('consult')
+        );
+      },
+      tutor: 'Podés mencionar fiebre alta persistente, cefalea con signos neurológicos, dolor torácico intenso, disnea importante o empeoramiento rápido.',
+      explanation: 'En atención farmacéutica es clave reconocer límites del autotratamiento y derivar cuando hay signos de gravedad o falta de respuesta.'
+    }
+  ],
+
+  // ===================== PRÁCTICA =====================
+  practica: [
+    {
+      type: 'blanks',
+      badge: 'AINE definición',
+      title: 'Definir AINE',
+      instruction: 'Completá: un AINE es un fármaco que actúa como ______, ______ y ______, y que además reduce la ______.',
+      blanks: ['analgésico', 'antipirético', 'antiinflamatorio', 'inflamación'],
+      tutor: 'Recordá las tres acciones principales de estos medicamentos.',
+      explanation: 'Los AINE son analgésicos, antipiréticos y antiinflamatorios usados ampliamente en dolencias menores.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Antibiótico NO',
+      title: 'Cuándo no dar antibiótico',
+      instruction: 'Seleccioná situaciones donde no corresponde recomendar antibióticos desde la farmacia.',
+      items: [
+        { text: 'Resfrío común de 3 días sin fiebre alta ni signos de gravedad', correct: true },
+        { text: 'Gripe típica en adulto sano sin complicaciones', correct: true },
+        { text: 'Dolor de garganta claramente viral sin exudado ni fiebre alta', correct: true },
+        { text: 'Infección bacteriana diagnosticada y con receta médica', correct: false }
+      ],
+      tutor: 'Aplicá el concepto de uso racional de antibióticos en infecciones virales.',
+      explanation: 'Evitar antibióticos en cuadros virales ayuda a prevenir resistencias y efectos adversos innecesarios.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Migraña vs cefalea',
+      title: 'Identificar migraña',
+      instruction: 'Marcá en verde características típicas de la migraña frente a otras cefaleas.',
+      items: [
+        { text: 'Dolor pulsátil, hemicraneal, que empeora con la actividad física', color: 'green' },
+        { text: 'Acompañado de náuseas, fotofobia y fonofobia', color: 'green' },
+        { text: 'Dolor opresivo en casco, leve a moderado, sin náuseas', color: 'red' },
+        { text: 'Posibles desencadenantes: estrés, menstruación, ciertos alimentos', color: 'green' }
+      ],
+      tutor: 'Contrasta migraña con cefalea tensional y otras formas de dolor de cabeza.',
+      explanation: 'La migraña se reconoce por su carácter pulsátil, síntomas acompañantes y desencadenantes específicos.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Combo resfrío',
+      title: 'Componentes de un combinado para resfrío',
+      instruction: 'Seleccioná fármacos que suelen aparecer combinados en productos para resfrío.',
+      items: [
+        { text: 'Paracetamol como analgésico y antipirético', correct: true },
+        { text: 'Antihistamínicos como clorfeniramina o loratadina', correct: true },
+        { text: 'Descongestivos como pseudoefedrina', correct: true },
+        { text: 'Antibiótico de amplio espectro de uso sistémico', correct: false }
+      ],
+      tutor: 'Recordá ejemplos de marcas que combinan estos principios activos para tratar varios síntomas.',
+      explanation: 'Los preparados para resfrío suelen combinar analgésicos, antihistamínicos, descongestivos y a veces expectorantes.'
+    },
+    {
+      type: 'text',
+      badge: 'Consejo fiebre',
+      title: 'Consejo breve para fiebre',
+      instruction: 'Redactá un consejo que darías a un adulto con fiebre moderada sin otros síntomas graves que compra paracetamol.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('dosis') || v.includes('cada') || v.includes('horas')) &&
+          (v.includes('no exced') || v.includes('maxima') || v.includes('máxima')) &&
+          (v.includes('hidrat') || v.includes('liquidos')) &&
+          (v.includes('consult') || v.includes('medic') || v.includes('si empeora') || v.includes('no mejora'))
+        );
+      },
+      tutor: 'Incluí intervalo de dosis, límite diario, hidratación y signos para consultar al médico.',
+      explanation: 'El consejo debe promover el uso seguro del antipirético, medidas generales y criterios de derivación. '
+    },
+    {
+      type: 'blanks',
+      badge: 'Fiebre valores',
+      title: 'Rango de fiebre',
+      instruction: 'Completá: se considera ______ a la temperatura menor de 38 °C y ______ cuando supera los 38 °C.',
+      blanks: ['febrícula', 'fiebre'],
+      tutor: 'Tomá como referencia la definición del manual sobre valores de temperatura.',
+      explanation: 'Distinguir febrícula de fiebre ayuda a valorar la gravedad y decidir el manejo adecuado.'
+    },
+    {
+      type: 'traffic',
+      badge: 'Anticoncepción práctica',
+      title: 'Elegir método anticonceptivo',
+      instruction: 'Marcá en verde enunciados correctos sobre métodos anticonceptivos vistos en el manual.',
+      items: [
+        { text: 'El preservativo masculino protege frente a embarazo y ETS', color: 'green' },
+        { text: 'La píldora combinada tiene eficacia superior al 99% si se usa correctamente', color: 'green' },
+        { text: 'El DIU no contiene hormonas y crea un entorno hostil para el esperma', color: 'green' },
+        { text: 'La “píldora del día después” es un método anticonceptivo de uso habitual', color: 'red' }
+      ],
+      tutor: 'Diferenciá métodos de barrera, hormonales y dispositivos intrauterinos.',
+      explanation: 'Cada método anticonceptivo tiene mecanismo, eficacia y usos específicos, y la píldora de emergencia no se considera método de rutina.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Pediatría práctica',
+      title: 'Check pediátrico antes de recomendar',
+      instruction: 'Seleccioná pasos que deberías seguir ante una dolencia menor en un niño.',
+      items: [
+        { text: 'Comprobar edad y peso antes de calcular la dosis', correct: true },
+        { text: 'Evitar combinados complejos en menores sin indicación médica', correct: true },
+        { text: 'Usar solo medicamentos aprobados para la edad pediátrica', correct: true },
+        { text: 'Asumir que las dosis de adultos son seguras reduciéndolas “a ojo”', correct: false }
+      ],
+      tutor: 'Pensá en seguridad, autorización para uso pediátrico y ajuste de dosis.',
+      explanation: 'La seguridad en pediatría se basa en dosis calculadas, fármacos adecuados a la edad y prudencia con combinaciones OTC.'
+    },
+    {
+      type: 'text',
+      badge: 'Geriatría práctica',
+      title: 'Revisión rápida en geriatría',
+      instruction: 'Describí brevemente qué revisarías antes de sugerir un AINE a un paciente geriátrico polimedicado.',
+      validation: (raw) => {
+        const v = normalizar(raw);
+        return (
+          (v.includes('medicacion') || v.includes('medicación') || v.includes('polimedic') || v.includes('lista de medicamentos')) &&
+          (v.includes('estomago') || v.includes('úlcera') || v.includes('gast') || v.includes('renal') || v.includes('riñon') || v.includes('presion') || v.includes('presión')) &&
+          (v.includes('interaccion') || v.includes('interacción') || v.includes('riesgo')) &&
+          v.includes('consult')
+        );
+      },
+      tutor: 'Mencioná antecedentes digestivos, renales, cardiovasculares y posibles interacciones.',
+      explanation: 'En geriatría la indicación de AINE exige revisar comorbilidades, medicación concomitante y riesgo de efectos adversos.'
+    },
+    {
+      type: 'checklist',
+      badge: 'Rol auxiliar',
+      title: 'Rol del auxiliar en dolencias menores',
+      instruction: 'Seleccioná funciones adecuadas del auxiliar de farmacia en la atención de dolencias menores.',
+      items: [
+        { text: 'Orientar sobre el uso correcto de medicamentos OTC y medidas no farmacológicas', correct: true },
+        { text: 'Identificar signos de alarma que requieren derivación médica', correct: true },
+        { text: 'Prescribir antibióticos o opioides sin receta', correct: false },
+        { text: 'Promover el uso racional de medicamentos evitando abusos y duplicidades', correct: true }
+      ],
+      tutor: 'Pensá en un rol de educación, seguridad y detección precoz de problemas más graves.',
+      explanation: 'El auxiliar es clave para la educación sanitaria, el uso responsable de fármacos y la derivación oportuna en la farmacia comunitaria.'
+    }
+  ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
